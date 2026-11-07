@@ -109,6 +109,13 @@ it.
   a substitute.** It answers only after the parent's default branch is fetched,
   and it answers about one branch. Use it to skip a network call, never to
   conclude a pin is unreachable.
+- **A submodule is advanced by committing inside the parent's checkout, not in
+  the repository it was cloned from.** `Parent/Sub` and the source `Sub` are two
+  repositories with two `HEAD`s; a commit in the source moves neither the
+  parent's index nor the checkout, so `git submodule status` correctly reports
+  in-sync while the source has moved on. A probe that advances the source and
+  then expects `+` is measuring the wrong repository, and it will pass or fail
+  for a reason unrelated to the guard.
 - **`ignore = all` in `.gitmodules` hides a dirty submodule, not a moved one.** A
   pointer update still appears; a modified worktree does not. That is why the
   bump hook compares with `git diff HEAD -- <path>` rather than reading status.
