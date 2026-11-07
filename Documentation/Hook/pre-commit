@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# pre-commit - refuse to commit on a detached HEAD.
+#
+# A commit made while HEAD is detached lands on no branch. Once the worktree
+# moves, nothing names it: `git log` on any branch cannot reach it, `git branch
+# --contains` cannot find it, and only the reflog remembers for ninety days.
+# The repair is manual and the mistake is invisible at the moment it is made, so
+# the gate is the only place it can be caught cheaply.
+#
+# Repo-agnostic on purpose: it must fire wherever a commit is attempted, in a
+# parent worktree and in every submodule that points core.hooksPath here.
+set -euo pipefail
+
+# `git symbolic-ref -q HEAD` fails exactly when HEAD is detached.
+if ! git symbolic-ref -q HEAD > /dev/null 2>&1; then
+	HEAD_SHA="$(git rev-parse HEAD)"
+	# Name the branches that already contain this commit, so the message can
+	# suggest a re-attach that will not lose anything.
+	HITS="$(git branch --contains "$HEAD_SHA" 2> /dev/null | sed -E 's/^[*+]?[[:space:]]*//' | grep -v '^$' | grep -v '^(no branch)' || true)"
+	SUGGEST=""
+	if [ -n "$HITS" ]; then
+		if echo "$HITS" | grep -qx 'Current'; then
+			SUGGEST="Current"
+		elif echo "$HITS" | grep -qx 'Development'; then
+			SUGGEST="Development"
+		else
+			SUGGEST="$(echo "$HITS" | head -1)"
+		fi
+		REATTACH="git checkout $SUGGEST"
+	else
+		REATTACH="git branch <name> $HEAD_SHA && git checkout <name>"
+	fi
+	echo ""
+	echo "REFUSED: commit on a detached HEAD ($HEAD_SHA)."
+	echo "A commit on no branch is a commit nobody can find."
+	echo "Re-attach first:"
+	echo "  $REATTACH"
+	echo ""
+	exit 1
+fi
+exit 0

@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# post-checkout - two responsibilities, in this order.
+#
+#  1. Never leave a repository on a detached HEAD. `git checkout <sha>` fires
+#     this hook, and if the commit is contained in a branch the right answer is
+#     to sit on that branch rather than beside it. This runs FIRST because the
+#     re-attach must not be gated on the file-checkout flag.
+#  2. On a branch checkout in a parent, commit any updated submodule gitlinks.
+#
+# Args: $1 old HEAD, $2 new HEAD, $3 flag (1 = branch/HEAD checkout,
+# 0 = file checkout).
+set -euo pipefail
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# -- Responsibility 1: re-attach, any flag ------------------------------------
+# The recursion guard matters: our own `git checkout` below fires this hook.
+if [[ -z "${DETACH_REATTACH_ACTIVE:-}" ]] && ! git symbolic-ref -q HEAD > /dev/null 2>&1; then
+	HEAD_SHA="$(git rev-parse HEAD)"
+	HITS="$(git branch --contains "$HEAD_SHA" 2> /dev/null | sed -E 's/^[*+]?[[:space:]]*//' | grep -v '^$' | grep -v '^(no branch)' || true)"
+	if [ -z "$HITS" ]; then
+		echo "post-checkout: WARNING HEAD is detached at $HEAD_SHA and the commit is on NO branch - attach manually" >&2
+	else
+		TARGET="$(echo "$HITS" | grep -x 'Current' || true)"
+		if [ -z "$TARGET" ]; then
+			TARGET="$(echo "$HITS" | grep -x 'Development' || true)"
+		fi
+		if [ -z "$TARGET" ]; then
+			TARGET="$(echo "$HITS" | head -1)"
+		fi
+		echo "post-checkout: re-attaching detached HEAD ($HEAD_SHA) to branch '$TARGET'"
+		DETACH_REATTACH_ACTIVE=1 git checkout "$TARGET" > /dev/null 2>&1 || true
+		exit 0
+	fi
+fi
+
+# -- Responsibility 2: gitlink bump, parent only, guarded in the lib ----------
+if [ "${3:-0}" = "1" ]; then
+	exec "$DIR/Lib/bump-submodule-gitlinks.sh"
+fi
+exit 0

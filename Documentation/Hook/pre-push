@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# pre-push - before any push from the parent, commit updated gitlinks so the
+# pushed ref never carries a pointer the submodule has moved past.
+set -euo pipefail
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+exec "$DIR/Lib/bump-submodule-gitlinks.sh"

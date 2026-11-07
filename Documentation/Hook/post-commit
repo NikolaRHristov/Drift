@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# post-commit - after a parent commit, commit any updated submodule gitlinks so
+# the parent never leaves a pointer the submodule has moved past.
+set -euo pipefail
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+exec "$DIR/Lib/bump-submodule-gitlinks.sh"

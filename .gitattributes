@@ -1,0 +1,7 @@
+# Hook scripts have no extension, so git decides their type by content and the
+# editor decides their line endings by this rule. Without it `core.autocrlf`
+# writes CRLF and the shebang becomes `env: bash\r`, at which point no hook runs
+# at all and the tree looks guarded while nothing is.
+Documentation/Hook/** text eol=lf
+*.sh text eol=lf
+* text=auto eol=lf
