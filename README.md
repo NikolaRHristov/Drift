@@ -61,6 +61,9 @@ Four, by what disagrees with what.
   input.
 - `Duplicate-Declaration` - a fact written down twice is two facts, and they will
   stop agreeing.
+- `Manifest-Surface` - the surface a manifest declares equals the surface a
+  document lists.
+- `Derived-Freshness` - a committed output is at least as new as its source.
 
 **Tree** - a file disagrees with a rule about what may exist.
 
@@ -70,11 +73,15 @@ Four, by what disagrees with what.
 - `Import-Arrow` - a capability must not import the adapter that implements it.
 - `Workspace-Membership` - every package directory is a member, and every member
   exists.
+- `Renamed-Reference` - no tracked file names a thing by a name it no longer has.
+- `Shadowed-Definition` - a definition that exists is the definition in effect, or
+  it does not exist.
 
 **Release** - a statement about the product disagrees with the product.
 
 - `Version-Parity` - every declaration of the version must agree.
 - `Claim-Evidence` - every status claim names the artifact that proves it.
+- `Cited-Quote` - every figure and quoted literal exists in the source it cites.
 
 ---
 
@@ -92,6 +99,17 @@ the shape once:
   that is not there, or passes over one that is.
 
 A guard with no probe is a preference. A probe that cannot fail proves nothing.
+
+Two rules come from the largest guard this corpus was built from, and both are
+about making a guard honest rather than strict:
+
+- **A guard names the primaries it needs, and skips when they are absent.** One
+  tree can be checked in two checkouts - a monorepo and a standalone deploy - and
+  a guard that fails because its sources are not there is a guard that gets
+  disabled. It reports `skipped` and passes, and the skip names what was missing.
+- **Compare as a set when order is presentation.** A numbered table and a manifest
+  list will differ in order forever; sorting both sides turns a permanent
+  false positive into a real comparison.
 
 ---
 
