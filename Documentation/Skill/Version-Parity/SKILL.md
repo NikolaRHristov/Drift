@@ -14,8 +14,8 @@ metadata:
 
 # Version Parity
 
-A release names one version in five files - two manifests, a package file, a
-plugin descriptor, and a pointer that a distribution reads. Four of them are
+A release states one version in several places: two manifests, a package file, a
+descriptor a loader reads, and a pointer a distribution resolves. Most of them are
 copied by hand.
 
 ## The invariant
@@ -27,9 +27,10 @@ that names a release names one whose assets exist.**
 
 ## The failure it prevents
 
-A parity failure is a release that installs one version and reports another. The
-plugin loads the binary it pinned, the binary reports its own version, and a bug
-report names the wrong build - so every later diagnosis starts from a false fact.
+A parity failure is a release that installs one version and reports another. A
+loader loads the artifact its pointer pins, the artifact reports its own version,
+and a bug report names the wrong build - so every later diagnosis starts from a
+false fact.
 
 A pointer failure is worse because it is asymmetric. The version is bumped before
 the assets are published, so the pointer names a release that does not exist yet,
@@ -38,27 +39,20 @@ ordering is the invariant: publish the assets, then move the pointer.
 
 ## The probe
 
-Read every declaration through the one place in each file that states it, then
-compare:
+Read every declaration through the one place in each file that states it, and
+print `file: value` so a disagreement is one line long. The extractor depends on
+the format - a line match for a manifest, a field read for a package file, the
+first line for a pointer:
 
 ```sh
-grep -n '^version' crates/*/Cargo.toml
-jq -r '.version' package.json
-head -1 plugins/<name>/BINARY_VERSION
-```
-
-A loop that prints `file: value` and sorts by value makes a disagreement one line
-long:
-
-```sh
-{ grep -H '^version' crates/*/Cargo.toml | sed -E 's/version *= *"([^"]+)"/\1/'
-  echo "package.json: $(jq -r '.version' package.json)"
-  echo "BINARY_VERSION: $(head -1 plugins/<name>/BINARY_VERSION)"
+{ grep -H '^version' <manifests> | sed -E 's/version *= *"([^"]+)"/\1/'
+  echo "<package-file>: $(jq -r '.version' <package-file>)"
+  echo "<pointer>: $(head -1 <pointer>)"
 } | awk -F': ' '{ print $2 }' | sort -u | wc -l
 ```
 
-`1` is agreement. Anything else is drift, and the loop above names which file
-differs.
+`1` is agreement. Anything else is drift, and the output above names which
+declaration differs.
 
 For the pointer, ask the distribution rather than the file:
 

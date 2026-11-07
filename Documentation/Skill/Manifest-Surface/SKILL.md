@@ -18,9 +18,9 @@ A manifest declares what a component provides: its tools, its hooks, its
 commands. A document lists the same surface for a reader. Both are hand-maintained
 and neither is generated from the other.
 
-Worked instance: `PlayForm/Aphrodite`, `Site/Scripts/Drift-Guard.mjs`, section 3 -
-`provides_hooks` and `provides_tools` compared against the tool-relay doc's
-numbered registry table.
+Worked instance: a content-integrity guard compares a plugin manifest's declared
+hook and tool lists against a documentation table's numbered registry - the
+manifest is the declaration and the table is the copy.
 
 ## The invariant
 
@@ -46,8 +46,8 @@ have thirteen but they are not the same thirteen.
 Extract both sides, sort both sides, compare the sets:
 
 ```sh
-<tool> manifest --json | jq -r '.provides_tools[]' | sort > /tmp/declared
-grep -oE '^\|\s*[0-9]+\s*\|\s*`[a-z_]+`' <doc> | grep -oE '`[a-z_]+`' | tr -d '`' | sort > /tmp/documented
+<extract-declared>   | sort > /tmp/declared
+<extract-documented> | sort > /tmp/documented
 diff /tmp/declared /tmp/documented
 ```
 

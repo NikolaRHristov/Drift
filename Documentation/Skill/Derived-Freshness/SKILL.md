@@ -17,8 +17,9 @@ metadata:
 A diagram source renders to an SVG. A page renders to HTML. The output is
 committed beside its input, so the pair can disagree.
 
-Worked instance: `PlayForm/Aphrodite`, `Site/Scripts/Drift-Guard.mjs`, section 6 -
-every `.mmd` under `Source/Content/Mermaid` must have an `.svg` at least as new.
+Worked instance: a content-integrity guard requires every diagram source under a
+site's content directory to have a rendered output at least as new as the source,
+so a stale diagram cannot claim a stale implementation.
 
 ## The invariant
 

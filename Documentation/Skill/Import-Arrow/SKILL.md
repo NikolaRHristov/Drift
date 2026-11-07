@@ -18,6 +18,11 @@ A workspace that separates a capability from the adapter that implements it has
 exactly one rule holding the separation up: the arrow points one way. The rule is
 invisible in a build - an import in the wrong direction compiles.
 
+The relation is about any module graph. A Rust workspace reads it from crate
+metadata, a JavaScript one from package manifests, a Python one from import
+statements; the probe below uses the Rust form because that graph is machine-
+readable, and the others need the same arrow checked by a different reader.
+
 ## The invariant
 
 **A capability imports no adapter; the facade is named only from outside the

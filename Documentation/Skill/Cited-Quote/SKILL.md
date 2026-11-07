@@ -17,9 +17,10 @@ metadata:
 A page states a number. A document shows a sample line. Both came from somewhere,
 and both are retyped rather than read.
 
-Worked instance: `PlayForm/Aphrodite`, `Site/Scripts/Drift-Guard.mjs`, sections 4
-and 5 - every `Nx` figure a page carries is looked up in the README or the
-CHANGELOG, and every stream-pane sample line in the docs' preview catalog.
+Worked instance: a content-integrity guard re-derives every multiplier figure a
+page renders - `610×`, `132×` - and fails any figure that appears in neither the
+README nor the changelog. The same guard requires every sample line a page quotes
+to exist verbatim in the documentation corpus.
 
 ## The invariant
 

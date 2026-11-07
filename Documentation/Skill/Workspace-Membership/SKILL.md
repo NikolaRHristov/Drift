@@ -17,6 +17,11 @@ metadata:
 A workspace names its members. The directory tree holds packages. Nothing keeps
 the two lists equal.
 
+The tool is an instance, not the rule: a JavaScript workspace has a workspace file
+and a package file per member, a Rust workspace has a member list in the root
+manifest, and a Python workspace has a dependency group. The relation is the same
+in all three.
+
 ## The invariant
 
 **Every package directory is a member, and every member exists.**

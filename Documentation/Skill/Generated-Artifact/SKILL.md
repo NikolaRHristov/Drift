@@ -50,14 +50,9 @@ A non-empty diff is drift. Restore the committed bytes afterwards unless the run
 was meant to regenerate them.
 
 Most generators carry the comparison themselves, which is better than wrapping
-one:
+one: a compare mode that exits non-zero on drift, and a flag that regenerates.
 
-```sh
-node Maintain/Script/GenerateSchema.ts          # compare, exit 1 on drift
-node Maintain/Script/GenerateSchema.ts --write  # regenerate
-```
-
-Prefer that form. A producer with a `--write` flag and a compare-by-default mode
+Prefer that form. A producer with a regenerate flag and a compare-by-default mode
 is a guard; a producer that only writes is a build step that happens to overwrite
 a tracked file.
 

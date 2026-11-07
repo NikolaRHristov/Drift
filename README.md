@@ -120,6 +120,11 @@ runs when they need the answer, and something an agent reads before it makes a
 change. Wiring a guard into a pipeline is a separate decision that belongs to the
 repository being guarded.
 
+It also names no repository. Every example is an instance of the relation rather
+than a citation of the project it was found in, because a guard that only makes
+sense beside one tree is a guard the next tree cannot use. A file name in a probe
+is a placeholder; the technique around it is the rule.
+
 ---
 
 ## Layout

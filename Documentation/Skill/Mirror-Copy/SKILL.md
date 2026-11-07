@@ -59,11 +59,7 @@ done
 
 Regenerate rather than copy, when a generator exists. Copying propagates whatever
 the reference currently says, which is right only if the reference is current.
-Regenerating proves both copies and the source at once:
-
-```sh
-node Maintain/Script/GenerateRedirects.ts
-```
+Regenerating proves both copies and the source at once.
 
 Copying is correct when there is no generator and the first file is authored.
 
