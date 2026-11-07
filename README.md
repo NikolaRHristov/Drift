@@ -130,6 +130,8 @@ is a placeholder; the technique around it is the rule.
 ## Layout
 
 - `AGENTS.md` - orientation, and the task-to-skill table.
+- `Documentation/Guard-Contract.md` - the shape every guard is written in: the
+  relation sentence, the five sections, the four rules a probe must satisfy.
 - `Documentation/Skill/<Name>/SKILL.md` - one guard per directory.
 - `Documentation/Hook/` - the preventive half: the git hooks two of the skills
   install, as one directory, because `core.hooksPath` names one directory.
